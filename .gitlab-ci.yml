@@ -1,0 +1,37 @@
+stages: # List of stages for jobs, and their order of execution
+  - build
+  - deploy
+
+# THIS IS THE PIPELINE FOR STAGING BRANCH
+build_and_deploy: # This job runs in the build stage, which runs first.
+  stage: build
+  environment:
+    name: $CI_COMMIT_REF_NAME
+    url: http://44.219.147.77/
+  only:
+    - staging
+    - master
+  before_script:
+    - apt update
+    - touch .env
+    - mkdir ~/.ssh
+    - eval $(ssh-agent -s)
+    - echo "$PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - chmod 700 /root/.ssh
+    - ssh-keyscan -H "$PUBLIC_KEY" >> ~/.ssh/known_hosts
+    - echo "$Env_variable" > .env
+
+  script:
+    - pwd
+    - cat .env
+    - ssh -o StrictHostKeyChecking=no ubuntu@$PUBLIC_KEY
+    - ssh -o StrictHostKeyChecking=no ubuntu@$PUBLIC_KEY "cd /home/ubuntu && sudo rm -rf frontend || true"
+    - ssh -o StrictHostKeyChecking=no ubuntu@$PUBLIC_KEY "sudo git clone https://gitlab+deploy-token-4127187:gldt-zhU6txuVQZbxHz46zQLA@gitlab.com/Codistan/ai-interview/frontend.git frontend"
+    - ssh -o StrictHostKeyChecking=no ubuntu@$PUBLIC_KEY "cd frontend && sudo git checkout staging"
+    #- scp -r /builds/Codistan/ai-interview/backend/.env ubuntu@$PUBLIC_KEY:/home/ubuntu/backend
+    - ssh -o StrictHostKeyChecking=no ubuntu@$PUBLIC_KEY "cd frontend && sudo npm install --legacy-peer-deps"
+    - ssh -o StrictHostKeyChecking=no ubuntu@$PUBLIC_KEY "cd frontend && sudo npm run build" 
+    - ssh -o StrictHostKeyChecking=no ubuntu@$PUBLIC_KEY "cd frontend/dist && pm2 restart frontend" 
+
+
+

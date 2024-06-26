@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: "Poppins" !important;
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: local("Poppins"),
+    url(../public/fonts/Poppins/Poppins-Regular.ttf) format("truetype");
+}
+
+/* Style the scrollbar */
+::-webkit-scrollbar {
+  width: 10px; /* Set width of the scrollbar */
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #e6edfe; /* Set background color of the track */
+  border-radius: 10px; /* Set border radius */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #084df2; /* Set background color of the thumb */
+  border-radius: 10px; /* Set border radius */
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+}
+*::-webkit-scrollbar-track {
+  background: #CDDBFC;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #084DF2;
+  border-radius: 10px;
+}
